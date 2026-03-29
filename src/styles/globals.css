@@ -1,0 +1,209 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+@layer base {
+  :root {
+    /* ── Suite O Brand Colors ── */
+    --brand: 338 100% 55%;
+    --brand-foreground: 0 0% 100%;
+
+    /* ── Radix / shadcn variables (light) ── */
+    --background: 0 0% 98%;
+    --foreground: 240 10% 8%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 8%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 8%;
+    --primary: 338 100% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 6% 10%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
+    --accent: 240 5% 96%;
+    --accent-foreground: 240 6% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 338 100% 55%;
+    --radius: 0.625rem;
+
+    /* ── Sidebar ── */
+    --sidebar-bg: 240 8% 8%;
+    --sidebar-fg: 0 0% 90%;
+    --sidebar-border: 240 6% 15%;
+    --sidebar-accent: 338 100% 55%;
+    --sidebar-muted: 240 5% 40%;
+    --sidebar-width: 256px;
+
+    /* ── Status colors ── */
+    --success: 142 76% 36%;
+    --warning: 45 93% 47%;
+    --info: 221 83% 53%;
+
+    /* ── Fonts ── */
+    --font-sans: 'DM Sans', system-ui, sans-serif;
+    --font-display: 'Playfair Display', Georgia, serif;
+  }
+
+  .dark {
+    --background: 240 8% 7%;
+    --foreground: 0 0% 95%;
+    --card: 240 8% 10%;
+    --card-foreground: 0 0% 95%;
+    --popover: 240 8% 10%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 338 100% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 6% 16%;
+    --secondary-foreground: 0 0% 90%;
+    --muted: 240 6% 16%;
+    --muted-foreground: 240 5% 55%;
+    --accent: 240 6% 16%;
+    --accent-foreground: 0 0% 90%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 6% 20%;
+    --input: 240 6% 20%;
+    --ring: 338 100% 60%;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    @apply font-semibold tracking-tight;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-transparent; }
+  ::-webkit-scrollbar-thumb { @apply bg-border rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-muted-foreground/30; }
+}
+
+@layer components {
+  /* ── Sidebar ── */
+  .sidebar {
+    width: var(--sidebar-width);
+    background: hsl(var(--sidebar-bg));
+    border-right: 1px solid hsl(var(--sidebar-border));
+  }
+
+  .sidebar-item {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150;
+    color: hsl(var(--sidebar-muted));
+  }
+
+  .sidebar-item:hover {
+    background: hsl(var(--sidebar-border));
+    color: hsl(var(--sidebar-fg));
+  }
+
+  .sidebar-item.active {
+    background: hsl(var(--brand) / 0.15);
+    color: hsl(338 100% 65%);
+    border-left: 2px solid hsl(338 100% 60%);
+  }
+
+  /* ── Glass card ── */
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl shadow-sm;
+  }
+
+  /* ── Stat card ── */
+  .stat-card {
+    @apply glass-card p-5 hover:shadow-md transition-shadow duration-200;
+  }
+
+  /* ── Status badge ── */
+  .badge-pending    { @apply bg-yellow-100 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800/50; }
+  .badge-confirmed  { @apply bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800/50; }
+  .badge-completed  { @apply bg-green-100 text-green-800 border border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800/50; }
+  .badge-cancelled  { @apply bg-red-100 text-red-800 border border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800/50; }
+  .badge-in_progress { @apply bg-purple-100 text-purple-800 border border-purple-200 dark:bg-purple-900/20 dark:text-purple-400 dark:border-purple-800/50; }
+
+  /* ── Brand gradient text ── */
+  .gradient-text {
+    @apply bg-gradient-to-r from-brand-500 to-brand-700 bg-clip-text text-transparent;
+  }
+
+  /* ── Page header ── */
+  .page-header {
+    @apply flex items-center justify-between mb-6;
+  }
+
+  .page-title {
+    @apply text-2xl font-semibold tracking-tight;
+  }
+
+  /* ── Table styles ── */
+  .data-table {
+    @apply w-full text-sm;
+  }
+
+  .data-table thead tr {
+    @apply border-b border-border;
+  }
+
+  .data-table thead th {
+    @apply text-left py-3 px-4 text-muted-foreground font-medium text-xs uppercase tracking-wider;
+  }
+
+  .data-table tbody tr {
+    @apply border-b border-border/50 hover:bg-muted/30 transition-colors;
+  }
+
+  .data-table tbody td {
+    @apply py-3 px-4;
+  }
+
+  /* ── Loading skeleton ── */
+  .skeleton {
+    @apply bg-muted/60 rounded-md overflow-hidden relative;
+  }
+
+  .skeleton::after {
+    content: '';
+    @apply absolute inset-0;
+    background: linear-gradient(90deg, transparent, hsl(var(--muted) / 0.8), transparent);
+    animation: shimmer 2s infinite;
+    transform: translateX(-100%);
+  }
+
+  /* ── Calendar appointment blocks ── */
+  .appt-block {
+    @apply rounded-md p-1.5 text-xs font-medium cursor-pointer transition-all hover:scale-[1.02] border-l-2;
+  }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+
+  /* ── Gradient backgrounds ── */
+  .bg-brand-gradient {
+    background: linear-gradient(135deg, hsl(338 100% 55%) 0%, hsl(310 80% 50%) 100%);
+  }
+
+  .bg-dark-gradient {
+    background: linear-gradient(180deg, hsl(240 8% 8%) 0%, hsl(240 8% 6%) 100%);
+  }
+
+  /* ── Scrollable ── */
+  .scroll-y { overflow-y: auto; scrollbar-width: thin; }
+  .hide-scrollbar { scrollbar-width: none; }
+  .hide-scrollbar::-webkit-scrollbar { display: none; }
+}
