@@ -16,6 +16,9 @@ export async function middleware(request: NextRequest) {
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options)
           )
+          // FIX: also write cookies back onto the request so downstream
+          // middleware and server components see the updated session
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
         },
       },
     }

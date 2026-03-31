@@ -15,7 +15,10 @@ export default async function DashboardPage() {
     .eq('id', user.id)
     .single()
 
-  if (!userData?.salon_id) redirect('/setup')
+  // FIX: /setup route doesn't exist — redirect to login with an error param
+  // so the user sees a meaningful message instead of an infinite redirect loop
+  if (!userData) redirect('/auth/login?error=no_user_record')
+  if (!userData.salon_id) redirect('/auth/login?error=no_salon')
 
   const salonId = userData.salon_id
   const today = new Date().toISOString().split('T')[0]
