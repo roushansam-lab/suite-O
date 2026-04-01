@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Scissors, Mail, Phone, Eye, EyeOff, ArrowRight } from 'lucide-react'
@@ -10,15 +10,17 @@ import { Spinner } from '@/components/ui'
 
 type Mode = 'email' | 'otp'
 
-export default function LoginPage() {
+const errorMessages: Record<string, string> = {
+  no_user_record: 'Your account is not set up yet. Please contact support.',
+  no_salon: 'No salon linked to your account. Please contact support.',
+}
+
+function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const errorParam = searchParams.get('error')
-  const errorMessages: Record<string, string> = {
-    no_user_record: 'Your account is not set up yet. Please contact support.',
-    no_salon: 'No salon linked to your account. Please contact support.',
-  }
   const errorMessage = errorParam ? errorMessages[errorParam] : null
+
   const [mode, setMode] = useState<Mode>('email')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -36,7 +38,6 @@ export default function LoginPage() {
     setLoading(false)
     if (error) { toast.error(error.message); return }
     toast.success('Welcome back!')
-    // FIX: refresh first to commit session cookie, then navigate
     router.refresh()
     router.push('/dashboard')
   }
@@ -45,7 +46,6 @@ export default function LoginPage() {
     e.preventDefault()
     setLoading(true)
     const supabase = createClient()
-    // FIX: strip all non-digits and leading zeros before adding +91
     const digits = phone.replace(/\D/g, '').replace(/^0+/, '')
     const formattedPhone = phone.startsWith('+') ? phone : `+91${digits}`
     const { error } = await supabase.auth.signInWithOtp({ phone: formattedPhone })
@@ -59,21 +59,18 @@ export default function LoginPage() {
     e.preventDefault()
     setLoading(true)
     const supabase = createClient()
-    // FIX: strip all non-digits and leading zeros before adding +91
     const digits = phone.replace(/\D/g, '').replace(/^0+/, '')
     const formattedPhone = phone.startsWith('+') ? phone : `+91${digits}`
     const { error } = await supabase.auth.verifyOtp({ phone: formattedPhone, token: otpToken, type: 'sms' })
     setLoading(false)
     if (error) { toast.error(error.message); return }
     toast.success('Welcome!')
-    // FIX: refresh first to commit session cookie, then navigate
     router.refresh()
     router.push('/dashboard')
   }
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-primary/5 blur-3xl" />
         <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-primary/5 blur-3xl" />
@@ -191,5 +188,13 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center"><Spinner className="w-6 h-6" /></div>}>
+      <LoginForm />
+    </Suspense>
   )
 }
